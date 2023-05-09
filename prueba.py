@@ -1,5 +1,4 @@
 import os, sys, re
-import pandas as pd
 import logging
 from logging.handlers import RotatingFileHandler
 
