@@ -72,6 +72,8 @@ def main():
 
     try:
         for file in files:
+            ruta_actual = os.getcwd()
+            print(ruta_actual)
             transfer_data(DATA_DIR + file, '.\\' + 'prueba_' + file)
             print('Funciona yuju')
     except Exception as ex:
