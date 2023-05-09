@@ -72,15 +72,7 @@ def main():
     else:
         app_log = set_logs()
 	
-    PROP_FILE = 'config/prueba.properties'
-
-    try:
-        PROPERTIES = properties(PROP_FILE)
-    except Exception as ex:
-        app_log.error("Error durante la carga del fichero de properties. {}".format(str(ex)))
-        raise
-	
-    DATA_DIR = PROPERTIES['DATA_DIR']
+    DATA_DIR = 'C:\\Users\\miguel.llorente\\Documents\\Nastat\\nastat\\superset\\'
 
     try:
         files = list_files(DATA_DIR)
