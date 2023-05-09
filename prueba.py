@@ -2,7 +2,7 @@ import os
 import subprocess
 
 # Ruta al archivo que deseas descargar de HDFS
-hdfs_path = 'C:\\Users\\miguel.llorente\\Documents\\Nastat\\nastat\\hive\\distribution\\Industria_construccion_y_servicios\\'
+hdfs_path = 'C:\\Users\\miguel.llorente\\Documents\\Nastat\\nastat\\superset\\creacion_nota_estadistica.py'
 
 # Ruta local donde deseas almacenar el archivo descargado
 local_path = 'C:\\Users\\miguel.llorente\\Desktop\\'
