@@ -1,4 +1,5 @@
 import os, sys, re
+import pandas as pd
 import logging
 from logging.handlers import RotatingFileHandler
 
@@ -64,15 +65,19 @@ def main():
     DATA_DIR = 'C:\\Users\\miguel.llorente\\Documents\\Nastat\\nastat\\superset\\'
 
     try:
-        files = list_files(DATA_DIR)
-        print(files)
+        files = list_files(DATA_DIR)    
         app_log.info('Listado de los ficheros dentro del directorio.')
     except Exception as ex:
         app_log.error(f'Error al listar los ficheros dentro del directorio. {ex}')
         raise
 
-    for file in files:
-        transfer_data(DATA_DIR + file, '.\\' + 'prueba_' + file)
+    try:
+        for file in files:
+            transfer_data(DATA_DIR + file, '.\\' + 'prueba_' + file)
+            print('Funciona yuju')
+    except Exception as ex:
+        app_log.error(f'error')
+        raise
 
 if __name__ == '__main__':
 	main()
