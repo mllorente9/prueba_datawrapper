@@ -17,7 +17,7 @@ def set_logs(logLevelParam = 'INFO'):
         else:
                 logLevel = 'INFO'
 
-        logname = '/home/admin/logs/log.log'
+        logname = 'C:\Users\miguel.llorente\Documents\Nastat\prueba_datawrapper\logs.log'
         log_file_formatter = logging.Formatter('%(filename)s %(asctime)s %(levelname)s %(funcName)s(%(lineno)d) %(message)s')
         log_stream_formatter = logging.Formatter('%(asctime)s %(levelname)s %(funcName)s(%(lineno)d) %(message)s')
 
