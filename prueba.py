@@ -72,7 +72,7 @@ def main():
     else:
         app_log = set_logs()
 	
-    PROP_FILE = 'prueba.properties'
+    PROP_FILE = 'config/prueba.properties'
 
     try:
         PROPERTIES = properties(PROP_FILE)
