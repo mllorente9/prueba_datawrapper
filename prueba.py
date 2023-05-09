@@ -92,3 +92,6 @@ def main():
 
     for file in files:
         transfer_data(DATA_DIR + file, '.\\' + 'prueba_' + file)
+
+if __name__ == '__main__':
+	main()
