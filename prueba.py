@@ -1,21 +1,93 @@
-import os
-import subprocess
+import os, sys, re
+import logging
+from logging.handlers import RotatingFileHandler
 
-# Ruta al archivo que deseas descargar de HDFS
-hdfs_path = 'C:\\Users\\miguel.llorente\\Documents\\Nastat\\nastat\\superset\\creacion_nota_estadistica.py'
+# Función para establecer el comportamiento de los logs durante la ejecución
+def set_logs(logLevelParam = 'INFO'):
+        logLevelParamCorr = logLevelParam.upper()
+        logLevelDict = {
+                        'INFO':logging.INFO,
+                        'NOTSET':logging.NOTSET,
+                        'DEBUG':logging.DEBUG,
+                        'WARNING':logging.WARNING,
+                        'ERROR':logging.ERROR,
+                        'CRITICAL':logging.CRITICAL}
+        if logLevelParamCorr in logLevelDict.keys():
+                logLevel = logLevelDict[logLevelParamCorr]
+        else:
+                logLevel = 'INFO'
 
-# Ruta local donde deseas almacenar el archivo descargado
-local_path = 'C:\\Users\\miguel.llorente\\Desktop\\'
+        logname = '/home/admin/logs/log.log'
+        log_file_formatter = logging.Formatter('%(filename)s %(asctime)s %(levelname)s %(funcName)s(%(lineno)d) %(message)s')
+        log_stream_formatter = logging.Formatter('%(asctime)s %(levelname)s %(funcName)s(%(lineno)d) %(message)s')
 
-# Descarga el archivo de HDFS a tu sistema local
-subprocess.call(['hadoop', 'fs', '-copyToLocal', hdfs_path, local_path])
+        file_handler = RotatingFileHandler(logname, mode='a', maxBytes=5*1024*1024, backupCount=2, encoding=None, delay=0)
+        file_handler.setFormatter(log_file_formatter)
+        file_handler.setLevel(logLevel)
 
-# Agrega el archivo al repositorio Git y realiza un commit
-git_path = 'C:\\Users\\miguel.llorente\\Documents\\Nastat\\prueba_datawrapper\\prueba_datawrapper'
-git_file = os.path.join(git_path, 'nombre_del_archivo')
+        stream_handler = logging.StreamHandler()
+        stream_handler.setFormatter(log_stream_formatter)
+        stream_handler.setLevel(logLevel)
 
-subprocess.call(['git', '-C', git_path, 'add', git_file])
-subprocess.call(['git', '-C', git_path, 'commit', '-m', 'Subiendo archivo desde HDFS'])
+        app_log = logging.getLogger('root')
+        app_log.setLevel(logging.DEBUG)
+        app_log.addHandler(file_handler)
+        app_log.addHandler(stream_handler)
+        return app_log
 
-# Carga el archivo en el repositorio Git remoto
-subprocess.call(['git', '-C', git_path, 'push'])
+# Función que carga las variables globales del script, las cuales están almacenadas en un 
+# fichero externo de propiedades.
+def properties(path):
+	prop = {}
+	with open(path, 'r') as f:
+		for line in f:
+			key, val = line.split('=')
+			key = key.strip()
+			val = str(val).strip()
+			prop[key] = val
+	return prop
+
+# Función que lista todos los ficheros excel dentro de un directorio.
+def list_files(path):
+	files = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
+	return files
+
+
+# Función que transfiere el archivo a HDFS
+def transfer_data(origin_path, dest_path):
+	if dest_path[-1] != '/':
+		dest_path = dest_path
+
+	put = f'hdfs dfs -put -f {origin_path} {dest_path}'
+	os.system(put)
+
+	rm = f'rm {origin_path}'
+	os.system(rm) 
+	
+
+def main():
+
+    if len(sys.argv)>1:
+        app_log = set_logs(sys.argv[1])
+    else:
+        app_log = set_logs()
+	
+    PROP_FILE = 'prueba.properties'
+
+    try:
+        PROPERTIES = properties(PROP_FILE)
+    except Exception as ex:
+        app_log.error("Error durante la carga del fichero de properties. {}".format(str(ex)))
+        raise
+	
+    DATA_DIR = PROPERTIES['DATA_DIR']
+
+    try:
+        files = list_files(DATA_DIR)
+        app_log.info('Listado de los ficheros dentro del directorio.')
+    except Exception as ex:
+        app_log.error(f'Error al listar los ficheros dentro del directorio. {ex}')
+        raise
+
+    for file in files:
+        transfer_data(DATA_DIR + file, '.\\' + 'prueba_' + file)
