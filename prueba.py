@@ -84,6 +84,7 @@ def main():
 
     try:
         files = list_files(DATA_DIR)
+        print(files)
         app_log.info('Listado de los ficheros dentro del directorio.')
     except Exception as ex:
         app_log.error(f'Error al listar los ficheros dentro del directorio. {ex}')
