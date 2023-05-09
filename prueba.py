@@ -35,17 +35,6 @@ def set_logs(logLevelParam = 'INFO'):
         app_log.addHandler(stream_handler)
         return app_log
 
-# Función que carga las variables globales del script, las cuales están almacenadas en un 
-# fichero externo de propiedades.
-def properties(path):
-	prop = {}
-	with open(path, 'r') as f:
-		for line in f:
-			key, val = line.split('=')
-			key = key.strip()
-			val = str(val).strip()
-			prop[key] = val
-	return prop
 
 # Función que lista todos los ficheros excel dentro de un directorio.
 def list_files(path):
